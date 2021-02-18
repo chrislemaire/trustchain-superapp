@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/pool">
+    app:startDestination="@id/poolFragment">
     <fragment
-        android:id="@+id/pool"
+        android:id="@+id/poolFragment"
         android:name="nl.tudelft.trustchain.liquidity.PoolFragment"
         android:label="fragment_pool"
         tools:layout="@layout/fragment_pool" />
