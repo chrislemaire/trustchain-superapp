@@ -18,8 +18,8 @@ object WalletService {
     fun createMultiSigWallet(dir: File): Wallet =
         createWallet(dir, "multi-sig")
 
-    fun createWallet(dir: File, name: String): Wallet =
-        object : WalletAppKit(params, dir, name) {
+    fun createWallet(dir: File, name: String): Wallet {
+        val app = object : WalletAppKit(params, dir, name) {
             override fun onSetupCompleted() {
                 if (wallet().keyChainGroupSize < 1) {
                     wallet().importKey(ECKey())
@@ -30,5 +30,11 @@ object WalletService {
                     URL("$bitcoinFaucetEndpoint?id=$address").readBytes()
                 }
             }
-        }.wallet()
+        }
+        app.setAutoSave(true)
+        app.setBlockingStartup(false)
+        app.startAsync()
+        app.awaitRunning()
+        return app.wallet()
+    }
 }
