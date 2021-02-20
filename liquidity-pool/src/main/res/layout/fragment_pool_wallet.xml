@@ -1,61 +1,234 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/light_gray"
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/txtTotalBalance"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal|center_vertical"
-            android:text="Hellooooo I am your Wallet"
-            android:textSize="24sp" />
+            android:layout_height="96dp"
+            android:background="@drawable/border_bottom_line"
+            android:ems="10"
+            android:gravity="center"
+            android:text="Total Balance : eur?"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_height="739dp"
+            android:orientation="horizontal"
+            android:weightSum="100">
 
-            <TextView
-                android:id="@+id/txtWalletLink"
-                android:layout_width="313dp"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="739dp"
+                android:layout_weight="50"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="BTC"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:id="@+id/axtWalletLink"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="85"
+                        android:gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="bjkdasjkbdasndmndjwndjkasd"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnCopyWalletLink"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="15"
+                        app:srcCompat="?android:attr/actionModeCopyDrawable" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="367dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtBalance"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border"
+                        android:gravity="center"
+                        android:text="101,50"
+                        android:textSize="90sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/plainTxtBalance"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:background="@drawable/border_no_top_line_left"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="Balance"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/btnSendMoney"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:backgroundTint="#4CAF50"
+                        app:srcCompat="@drawable/ic_add_black_24dp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="739dp"
+                android:layout_weight="50"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="ETH"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="100">
+
+                    <TextView
+                        android:id="@+id/axtWalletLink"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="85"
+                        android:gravity="center_vertical"
+                        android:gravity="center"
+                        android:text="cwlkagjkddhskdmnlupodjwknm"
+                        android:textSize="25sp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/btnCopyWalletLink"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="15"
+                        app:srcCompat="?android:attr/actionModeCopyDrawable" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="367dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/txtBalance"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/border_no_left_line"
+                        android:gravity="center"
+                        android:text="50,01"
+                        android:textSize="90sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/plainTxtBalance"
+                    android:layout_width="match_parent"
+                    android:layout_height="75dp"
+                    android:background="@drawable/border_no_top_line_right"
+                    android:ems="10"
+                    android:gravity="center"
+                    android:text="Balance"
+                    android:textSize="24sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageButton
+                        android:id="@+id/btnSendMoney"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:backgroundTint="#4CAF50"
+                        app:srcCompat="@drawable/ic_add_black_24dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="316dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="bjkdasjkbdasndmndjwndjkasd"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/btnCopyWalletLink"
-                android:layout_width="38dp"
-                android:layout_height="36dp"
-                app:srcCompat="?android:attr/actionModeCopyDrawable" />
+                <ImageButton
+                    android:id="@+id/btnTradeCoins"
+                    android:layout_width="match_parent"
+                    android:layout_height="265dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#9FD4FF"
+                    android:gravity="center"
+                    app:srcCompat="@android:drawable/ic_popup_sync" />
+            </LinearLayout>
+
+        </LinearLayout>
+        <![CDATA[
+
+
+
+
+
+
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Balance: "
-                android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/txtBalance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp" />
-        </LinearLayout>
 
-    </LinearLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    a/androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+]]>
