@@ -17,18 +17,18 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
 
         super.onCreate(savedInstanceState)
 
-        val walletDir = context?.cacheDir ?: throw Error("CacheDir not found")
-        val wallet = WalletService.createPersonalWallet(walletDir)
+//        val walletDir = context?.cacheDir ?: throw Error("CacheDir not found")
+//        val wallet = WalletService.createPersonalWallet(walletDir)
 
-        lifecycleScope.launchWhenCreated {
+//        lifecycleScope.launchWhenCreated {
 //            btnCopyWalletLink.setOnClickListener {
 //                clipboard?.setPrimaryClip(ClipData.newPlainText("Wallet Link", txtWalletLink.text))
 //            }
 
-            while (isActive) {
-                txtWalletLink.text = wallet.activeKeyChain.issuedReceiveKeys.first().publicKeyAsHex
-                txtBalance.text = wallet.balance.toFriendlyString()
-            }
-        }
+//            while (isActive) {
+//                txtWalletLinkBtc.text = wallet.activeKeyChain.issuedReceiveKeys.first().publicKeyAsHex
+//                txtBalanceBtc.text = wallet.balance.toFriendlyString()
+//            }
+//        }
     }
 }
