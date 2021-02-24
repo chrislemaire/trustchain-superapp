@@ -12,15 +12,20 @@ import kotlinx.coroutines.isActive
 import nl.tudelft.trustchain.common.ui.BaseFragment
 import nl.tudelft.trustchain.liquidity.R
 import nl.tudelft.trustchain.liquidity.service.WalletService
+import org.bitcoinj.kits.WalletAppKit
 import org.bitcoinj.wallet.Wallet
 
 class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
+    lateinit var app: WalletAppKit
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         println("Hello World!")
 
         super.onCreate(savedInstanceState)
         val walletDir = context?.cacheDir ?: throw Error("CacheDir not found")
-        val wallet = WalletService.createPersonalWallet(walletDir)
+        app = WalletService.createPersonalWallet(walletDir)
+        val wallet = app.wallet()
 
         val clipboard = getSystemService(requireContext(), ClipboardManager::class.java) as ClipboardManager
         lifecycleScope.launchWhenStarted {
@@ -35,5 +40,10 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
                 delay(1000)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        app.stopAsync()
     }
 }

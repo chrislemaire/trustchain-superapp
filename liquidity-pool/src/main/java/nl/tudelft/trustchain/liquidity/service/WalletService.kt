@@ -17,13 +17,13 @@ object WalletService {
     private const val bitcoinFaucetEndpoint = "http://134.122.59.107:3000"
     val params = RegTestParams.get()
 
-    fun createPersonalWallet(dir: File): Wallet =
+    fun createPersonalWallet(dir: File): WalletAppKit =
         createWallet(dir, "personal")
 
-    fun createMultiSigWallet(dir: File): Wallet =
+    fun createMultiSigWallet(dir: File): WalletAppKit =
         createWallet(dir, "multi-sig")
 
-    fun createWallet(dir: File, name: String): Wallet {
+    fun createWallet(dir: File, name: String): WalletAppKit {
         val app = object : WalletAppKit(params, dir, name) {
             override fun onSetupCompleted() {
                 if (wallet().keyChainGroupSize < 1) {
@@ -42,6 +42,6 @@ object WalletService {
         app.setBlockingStartup(false)
         app.startAsync()
         app.awaitRunning()
-        return app.wallet()
+        return app
     }
 }
