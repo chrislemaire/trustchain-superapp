@@ -12,204 +12,68 @@
         android:background="@color/light_gray"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtTotalBalance"
-            android:layout_width="match_parent"
-            android:layout_height="96dp"
-            android:background="@drawable/border_bottom_line"
-            android:ems="10"
-            android:gravity="center"
-            android:text="Total Balance : eur?"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="739dp"
-            android:orientation="horizontal"
-            android:weightSum="100">
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="739dp"
-                android:layout_weight="50"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="BTC"
-                    android:textSize="24sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <TextView
-                        android:id="@+id/txtWalletLinkBtc"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="85"
-                        android:gravity="center"
-                        android:text="bla"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/btnCopyWalletLinkBtc"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="15"
-                        app:srcCompat="?android:attr/actionModeCopyDrawable" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="367dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txtBalanceBtc"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/border"
-                        android:gravity="center"
-                        android:text="101,50"
-                        android:textSize="90sp" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/plainTxtBalanceBtc"
-                    android:layout_width="match_parent"
-                    android:layout_height="75dp"
-                    android:background="@drawable/border_no_top_line_left"
-                    android:ems="10"
-                    android:gravity="center"
-                    android:text="Balance"
-                    android:textSize="24sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/btnSendMoneyBtc"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:backgroundTint="#4CAF50"
-                        app:srcCompat="@drawable/ic_add_black_24dp" />
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="739dp"
-                android:layout_weight="50"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:text="ETH"
-                    android:textSize="24sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="100">
-
-                    <TextView
-                        android:id="@+id/txtWalletLinkEth"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="85"
-                        android:gravity="center"
-                        android:text="true"
-                        android:textSize="25sp"
-                        android:textStyle="bold" />
-
-                    <ImageButton
-                        android:id="@+id/btnCopyWalletLinkEth"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="15"
-                        app:srcCompat="?android:attr/actionModeCopyDrawable" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="367dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/txtBalanceEth"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@drawable/border_no_left_line"
-                        android:gravity="center"
-                        android:text="50,01"
-                        android:textSize="90sp" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/plainTxtBalanceEth"
-                    android:layout_width="match_parent"
-                    android:layout_height="75dp"
-                    android:background="@drawable/border_no_top_line_right"
-                    android:ems="10"
-                    android:gravity="center"
-                    android:text="Balance"
-                    android:textSize="24sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <ImageButton
-                        android:id="@+id/btnSendMoneyEth"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:backgroundTint="#4CAF50"
-                        app:srcCompat="@drawable/ic_add_black_24dp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="316dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/bitCoinText"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:text="Bitcoin"
+                android:textAlignment="center" />
 
-                <ImageButton
-                    android:id="@+id/btnTradeCoins"
-                    android:layout_width="match_parent"
-                    android:layout_height="265dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="#9FD4FF"
-                    android:gravity="center"
-                    app:srcCompat="@android:drawable/ic_popup_sync" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/bitCoinAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wallet public key: " />
+
+            <TextView
+                android:id="@+id/bitCoinBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wallet balance: " />
 
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/euroTokenText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border"
+                android:text="Eurotoken"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/euroTokenAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wallet public key: " />
+
+            <TextView
+                android:id="@+id/euroTokenBalance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wallet balance: " />
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

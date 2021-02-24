@@ -2,11 +2,16 @@ package nl.tudelft.trustchain.liquidity.service
 
 import android.content.ContextWrapper.*
 import org.bitcoinj.core.ECKey
+import org.bitcoinj.core.PeerAddress
+import org.bitcoinj.core.listeners.DownloadProgressTracker
 import org.bitcoinj.kits.WalletAppKit
 import org.bitcoinj.params.RegTestParams
 import org.bitcoinj.wallet.Wallet
 import java.io.File
+import java.net.InetAddress
 import java.net.URL
+import java.net.UnknownHostException
+import java.util.*
 
 object WalletService {
     private const val bitcoinFaucetEndpoint = "http://134.122.59.107:3000"
@@ -31,6 +36,8 @@ object WalletService {
                 }
             }
         }
+        val localHost = InetAddress.getByName("134.122.59.107")
+        app.setPeerNodes(PeerAddress(params, localHost, params.port))
         app.setAutoSave(true)
         app.setBlockingStartup(false)
         app.startAsync()
