@@ -19,12 +19,10 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
         println("Hello World!")
 
         super.onCreate(savedInstanceState)
-
         val walletDir = context?.cacheDir ?: throw Error("CacheDir not found")
         val wallet = WalletService.createPersonalWallet(walletDir)
 
         val clipboard = getSystemService(requireContext(), ClipboardManager::class.java) as ClipboardManager
-
         lifecycleScope.launchWhenStarted {
             bitCoinCopyButton.setOnClickListener {
                 clipboard.setPrimaryClip(ClipData.newPlainText("Wallet Link", bitCoinAddress.text))

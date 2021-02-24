@@ -27,19 +27,19 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/bitCoinAddressText"
                     android:layout_width="300dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="Wallet public key:" />
 
                 <Button
                     android:id="@+id/bitCoinCopyButton"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:text="Copy" />
             </LinearLayout>
 
@@ -63,7 +63,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="66dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
@@ -71,14 +71,32 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border"
-                android:text="Eurotoken"
+                android:text="Euro Token"
                 android:textAlignment="center" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/euroTokenAddressText"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:text="Wallet public key:" />
+
+                <Button
+                    android:id="@+id/euroTokenCopyButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Copy" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/euroTokenAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Wallet public key: " />
+                android:text="key" />
 
             <TextView
                 android:id="@+id/euroTokenBalance"
@@ -93,5 +111,6 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
