@@ -6,4 +6,8 @@
         android:id="@+id/liquidityWalletFragment"
         android:icon="@drawable/ic_baseline_euro_symbol_24"
         android:title="Wallet" />
+    <item
+        android:id="@+id/poolFragment"
+        android:icon="@drawable/ic_device_hub_black_24dp"
+        android:title="Item" />
 </menu>
