@@ -9,7 +9,6 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_pool_wallet.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
-import nl.tudelft.trustchain.common.contacts.ContactStore
 import nl.tudelft.trustchain.common.eurotoken.GatewayStore
 import nl.tudelft.trustchain.common.eurotoken.TransactionRepository
 import nl.tudelft.trustchain.common.ui.BaseFragment
@@ -47,7 +46,7 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
             }
             while (isActive) {
                 bitCoinAddress.text = wallet.currentReceiveAddress().toString()
-                bitCoinBalance.text = "Wallet balance (confirmed): ${wallet.balance.toFriendlyString()}\nWallet balance (estimated): ${wallet.getBalance(
+                bitcoinBalance.text = "Wallet balance (confirmed): ${wallet.balance.toFriendlyString()}\nWallet balance (estimated): ${wallet.getBalance(
                     Wallet.BalanceType.ESTIMATED).toFriendlyString()}"
                 euroTokenAddress.text = eurowallet.getWalletAddress()
                 euroTokenBalance.text = "Wallet balance (confirmed): ${TransactionRepository.prettyAmount(eurowallet.getBalance())}"

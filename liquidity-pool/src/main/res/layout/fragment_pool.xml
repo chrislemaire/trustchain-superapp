@@ -55,7 +55,6 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/bitCoinText"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="0.2"
@@ -64,7 +63,6 @@
                             android:textSize="24sp" />
 
                         <TextView
-                            android:id="@+id/bitCoinBalance"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -166,7 +164,7 @@
                             android:textSize="24sp" />
 
                         <TextView
-                            android:id="@+id/euroTokenBalance"
+                            android:id="@+id/bitcoinBalance"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
