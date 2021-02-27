@@ -19,37 +19,48 @@ import org.bitcoinj.kits.WalletAppKit
 import org.bitcoinj.wallet.Wallet
 
 class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
+    /**
+     * The wallet app kit used to get a running bitcoin wallet.
+     */
     lateinit var app: WalletAppKit
 
-    protected val transactionRepository by lazy {
-        TransactionRepository(getIpv8().getOverlay()!!, gatewayStore)
+    /**
+     * A repository for transactions in Euro Tokens.
+     */
+    private val transactionRepository by lazy {
+        TransactionRepository(getIpv8().getOverlay()!!, GatewayStore.getInstance(requireContext()))
     }
-
-    private val gatewayStore by lazy {
-        GatewayStore.getInstance(requireContext())
-    }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        println("Hello World!")
-        val eurowallet = EuroTokenWallet(transactionRepository);
         super.onCreate(savedInstanceState)
+
+        // Get the directory where wallets can be stored.
         val walletDir = context?.cacheDir ?: throw Error("CacheDir not found")
+
+        // Create the wallets for bitcoin and euro token.
         app = WalletService.createPersonalWallet(walletDir)
-        val wallet = app.wallet()
+        val btwWallet = app.wallet()
+        val euroWallet = EuroTokenWallet(transactionRepository);
 
         val clipboard = getSystemService(requireContext(), ClipboardManager::class.java) as ClipboardManager
+
+        // Initialize the button actions and update loop.
         lifecycleScope.launchWhenStarted {
             bitCoinCopyButton.setOnClickListener {
                 clipboard.setPrimaryClip(ClipData.newPlainText("Wallet Link", bitCoinAddress.text))
                 Toast.makeText(requireContext(), "Copied key to clipboard!", Toast.LENGTH_SHORT).show()
             }
+
             while (isActive) {
-                bitCoinAddress.text = wallet.currentReceiveAddress().toString()
-                bitcoinBalance.text = "Wallet balance (confirmed): ${wallet.balance.toFriendlyString()}\nWallet balance (estimated): ${wallet.getBalance(
-                    Wallet.BalanceType.ESTIMATED).toFriendlyString()}"
-                euroTokenAddress.text = eurowallet.getWalletAddress()
-                euroTokenBalance.text = "Wallet balance (confirmed): ${TransactionRepository.prettyAmount(eurowallet.getBalance())}"
+                bitCoinAddress.text = btwWallet.currentReceiveAddress().toString()
+                bitcoinBalance.text = getString(R.string.wallet_balance_conf_est,
+                    btwWallet.balance.toFriendlyString(),
+                    btwWallet.getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString())
+
+                euroTokenAddress.text = euroWallet.getWalletAddress()
+                euroTokenBalance.text = getString(R.string.wallet_balance_conf,
+                    TransactionRepository.prettyAmount(euroWallet.getBalance()))
+
                 delay(1000)
             }
         }
@@ -57,6 +68,7 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
 
     override fun onDestroy() {
         super.onDestroy()
+
         app.stopAsync()
     }
 }

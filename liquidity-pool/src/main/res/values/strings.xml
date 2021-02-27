@@ -1,6 +1,10 @@
 <resources>
     <string name="bitcoin">Bitcoin</string>
     <string name="euro_token">Euro Token</string>
+
     <string name="wallet_public_key">Wallet public key:</string>
     <string name="wallet_balance">Wallet balance:</string>
+
+    <string name="wallet_balance_conf_est">Wallet balance (confirmed): %1$s\nWallet balance (estimated): %2$s</string>
+    <string name="wallet_balance_conf">Wallet balance (estimated): %1$s</string>
 </resources>

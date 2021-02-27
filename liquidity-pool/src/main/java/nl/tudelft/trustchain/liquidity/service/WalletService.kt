@@ -1,29 +1,54 @@
 package nl.tudelft.trustchain.liquidity.service
 
-import org.bitcoinj.core.Address
-import org.bitcoinj.core.Coin
+import com.google.common.util.concurrent.Service
 import org.bitcoinj.core.ECKey
 import org.bitcoinj.core.PeerAddress
 import org.bitcoinj.kits.WalletAppKit
 import org.bitcoinj.params.RegTestParams
-import org.bitcoinj.wallet.SendRequest
-import org.bitcoinj.wallet.Wallet
 import java.io.File
-import java.math.BigDecimal
 import java.net.InetAddress
 import java.net.URL
 
 object WalletService {
     private const val bitcoinFaucetEndpoint = "http://134.122.59.107:3000"
-    val params = RegTestParams.get()
 
+    private val walletStore: MutableMap<String, WalletAppKit> = mutableMapOf()
+    val params: RegTestParams = RegTestParams.get()
+
+    /**
+     * Creates a personal wallet and saves it continuously in the given file. If an app-kit has already
+     * started, this function looks up the running app-kit.
+     */
     fun createPersonalWallet(dir: File): WalletAppKit =
         createWallet(dir, "personal")
 
+    /**
+     * Creates a multi-signature wallet and saves it continuously in the given file. If an app-kit has
+     * already started, this function looks up the running app-kit.
+     */
     fun createMultiSigWallet(dir: File): WalletAppKit =
         createWallet(dir, "multi-sig")
 
+    /**
+     * Creates a wallet with the given name and saves it continuously in the given file. If an app-kit
+     * has already started, this function looks up the running app-kit and waits for it to be surely
+     * running.
+     */
     fun createWallet(dir: File, name: String): WalletAppKit {
+        // If a wallet app-kit was already stored and not terminated, retrieve it.
+        if (walletStore.containsKey(name) &&
+            !setOf(
+                Service.State.TERMINATED,
+                Service.State.STOPPING,
+                Service.State.FAILED
+            ).contains(walletStore[name]?.state())
+        ) {
+            walletStore[name]!!.awaitRunning()
+
+            return walletStore[name]!!
+        }
+
+        // Create an app-kit with testing bitcoins if empty.
         val app = object : WalletAppKit(params, dir, name) {
             override fun onSetupCompleted() {
                 if (wallet().keyChainGroupSize < 1) {
@@ -36,12 +61,18 @@ object WalletService {
                 }
             }
         }
-        val localHost = InetAddress.getByName("134.122.59.107")
-        app.setPeerNodes(PeerAddress(params, localHost, params.port))
+
+        app.setPeerNodes(PeerAddress(params, InetAddress.getByName("134.122.59.107"), params.port))
+
         app.setAutoSave(true)
         app.setBlockingStartup(false)
+
         app.startAsync()
         app.awaitRunning()
+
+        // Store the app-kit in the running wallet store
+        walletStore[name] = app
+
         return app
     }
 }
