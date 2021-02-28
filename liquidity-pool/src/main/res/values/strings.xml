@@ -7,4 +7,12 @@
 
     <string name="wallet_balance_conf_est">Wallet balance (confirmed): %1$s\nWallet balance (estimated): %2$s</string>
     <string name="wallet_balance_conf">Wallet balance (estimated): %1$s</string>
+
+    <string-array name="pool_options">
+        <item>BTC/Euro</item>
+    </string-array>
+    <string-array name="pool_tokens">
+        <item>BTC</item>
+        <item>Euro Token</item>
+    </string-array>
 </resources>
