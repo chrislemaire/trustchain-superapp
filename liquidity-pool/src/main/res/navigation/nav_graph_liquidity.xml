@@ -9,13 +9,12 @@
         android:name="nl.tudelft.trustchain.liquidity.ui.WalletFragment"
         android:label="Wallet" />
     <fragment
+        android:id="@+id/liquidityMultiSigWalletFragment"
+        android:name="nl.tudelft.trustchain.liquidity.ui.MultiSigWalletFragment"
+        android:label="MultiSigWallet" />
+    <fragment
         android:id="@+id/poolFragment"
         android:name="nl.tudelft.trustchain.liquidity.PoolFragment"
         android:label="Pool"
         tools:layout="@layout/fragment_pool" />
-    <fragment
-        android:id="@+id/liquidityMultiSigWalletFragment"
-        android:name="nl.tudelft.trustchain.liquidity.ui.MultiSigWalletFragment"
-        android:label="MultiSigWallet"
-        tools:layout="@layout/fragment_pool_multi_sig_wallet" />
 </navigation>
