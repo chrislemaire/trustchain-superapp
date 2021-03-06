@@ -50,6 +50,10 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
                 clipboard.setPrimaryClip(ClipData.newPlainText("Wallet Link", bitCoinAddress.text))
                 Toast.makeText(requireContext(), "Copied key to clipboard!", Toast.LENGTH_SHORT).show()
             }
+            euroTokenCopyButton.setOnClickListener {
+                clipboard.setPrimaryClip(ClipData.newPlainText("Wallet Link", euroTokenAddress.text))
+                Toast.makeText(requireContext(), "Copied key to clipboard!", Toast.LENGTH_SHORT).show()
+            }
 
             while (isActive) {
                 bitCoinAddress.text = btwWallet.currentReceiveAddress().toString()
