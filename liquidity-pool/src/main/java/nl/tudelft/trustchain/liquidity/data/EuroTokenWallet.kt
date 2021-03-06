@@ -33,4 +33,16 @@ class EuroTokenWallet(private val transactionRepository: TransactionRepository) 
     fun getBalance(): Long {
         return transactionRepository.getMyVerifiedBalance()
     }
+
+    fun getPoolOwners(): List<String> {
+        return transactionRepository.getPoolOwners()
+    }
+
+    fun joinPool(recipient: ByteArray, amount: Long) {
+        transactionRepository.sendJoinProposal(recipient, amount)
+    }
+
+    fun sendTokens(recipient: ByteArray, amount: Long) {
+        transactionRepository.sendTransferProposal(recipient, amount)
+    }
 }

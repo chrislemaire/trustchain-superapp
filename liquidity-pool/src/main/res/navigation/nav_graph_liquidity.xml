@@ -10,7 +10,7 @@
         android:label="Wallet" />
     <fragment
         android:id="@+id/poolFragment"
-        android:name="nl.tudelft.trustchain.liquidity.PoolFragment"
+        android:name="nl.tudelft.trustchain.liquidity.ui.PoolFragment"
         android:label="Pool"
         tools:layout="@layout/fragment_pool" />
 </navigation>

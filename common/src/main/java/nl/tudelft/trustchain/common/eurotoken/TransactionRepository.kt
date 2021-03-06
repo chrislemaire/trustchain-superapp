@@ -126,6 +126,24 @@ class TransactionRepository(
         }
     }
 
+    fun getPoolOwnersForBlock(block: TrustChainBlock?, database: TrustChainStore): List<String>? {
+        if (block == null) return null
+        if (block.isGenesis) return listOf()
+        if (!EUROTOKEN_TYPES.contains(block.type)) return getPoolOwnersForBlock(
+            database.getBlockWithHash(
+                block.previousHash
+            ), database
+        )
+        val list = listOf<String>()
+        getPoolOwnersForBlock(database.getBlockWithHash(block.previousHash), database)?.let { list.plus(it) }
+        if ( // block contains a join action
+            (BLOCK_TYPE_JOIN.equals(block.type) && block.isProposal)
+        ) {
+            list.plus(block.publicKey)
+        }
+        return list
+    }
+
     fun getMyVerifiedBalance(): Long {
         val mykey = IPv8Android.getInstance().myPeer.publicKey.keyToBin()
         val latestBlock = trustChainCommunity.database.getLatest(mykey) ?: return 0
@@ -138,6 +156,12 @@ class TransactionRepository(
         return getBalanceForBlock(latestBlock, trustChainCommunity.database)!!
     }
 
+    fun getPoolOwners(): List<String> {
+        val myKey = IPv8Android.getInstance().myPeer.publicKey.keyToBin()
+        val latestBlock = trustChainCommunity.database.getLatest(myKey) ?: return listOf()
+        return getPoolOwnersForBlock(latestBlock, trustChainCommunity.database)!!
+    }
+
     fun sendTransferProposal(recipient: ByteArray, amount: Long): TrustChainBlock? {
         if (getMyVerifiedBalance() - amount < 0) {
             return null
@@ -148,6 +172,20 @@ class TransactionRepository(
         )
         return trustChainCommunity.createProposalBlock(
             BLOCK_TYPE_TRANSFER, transaction,
+            recipient
+        )
+    }
+
+    fun sendJoinProposal(recipient: ByteArray, amount: Long): TrustChainBlock? {
+        if (getMyVerifiedBalance() - amount < 0) {
+            return null
+        }
+        val transaction = mapOf(
+            KEY_AMOUNT to BigInteger.valueOf(amount),
+            KEY_BALANCE to (BigInteger.valueOf(getMyBalance() - amount).toLong())
+        )
+        return trustChainCommunity.createProposalBlock(
+            BLOCK_TYPE_JOIN, transaction,
             recipient
         )
     }
@@ -364,6 +402,63 @@ class TransactionRepository(
         })
     }
 
+    private fun addJoinListener() {
+        trustChainCommunity.registerTransactionValidator(
+            BLOCK_TYPE_JOIN,
+            object : TransactionValidator {
+                override fun validate(
+                    block: TrustChainBlock,
+                    database: TrustChainStore
+                ): ValidationResult {
+                    if (block.isProposal) {
+                        if (!block.transaction.containsKey(KEY_AMOUNT)) return ValidationResult.Invalid(
+                            listOf("Missing amount")
+                        )
+                        var result = verifyListedBalance(block, database)
+                        if (result != ValidationResult.Valid) {
+                            return result
+                        }
+                        result = verifyBalanceAvailable(block, database)
+                        if (result != ValidationResult.Valid) {
+                            return result
+                        }
+                    } else {
+                        if (database.getLinked(block)?.transaction?.equals(block.transaction) != true) {
+                            return ValidationResult.Invalid(
+                                listOf(
+                                    "Linked transaction doesn't match (${block.transaction}, ${
+                                    database.getLinked(
+                                        block
+                                    )?.transaction ?: "MISSING"
+                                    })"
+                                )
+                            )
+                        }
+                    }
+                    return ValidationResult.Valid
+                }
+            })
+
+        trustChainCommunity.registerBlockSigner(BLOCK_TYPE_JOIN, object : BlockSigner {
+            override fun onSignatureRequest(block: TrustChainBlock) {
+                Log.w("EuroTokenBlockJoin", "sig request ${block.transaction}")
+                // agree if validated
+                trustChainCommunity.sendBlock(
+                    trustChainCommunity.createAgreementBlock(
+                        block,
+                        block.transaction
+                    )
+                )
+            }
+        })
+
+        trustChainCommunity.addListener(BLOCK_TYPE_JOIN, object : BlockListener {
+            override fun onBlockReceived(block: TrustChainBlock) {
+                Log.d("EuroTokenBlock", "onBlockReceived: ${block.blockId} ${block.transaction}")
+            }
+        })
+    }
+
     private fun addCreationListeners() {
         trustChainCommunity.registerTransactionValidator(
             BLOCK_TYPE_CREATE,
@@ -544,6 +639,7 @@ class TransactionRepository(
 
     fun initTrustChainCommunity() {
         addTransferListeners()
+        addJoinListener()
         addCreationListeners()
         addDestructionListeners()
         addCheckpointListeners()
@@ -561,13 +657,15 @@ class TransactionRepository(
         const val BLOCK_TYPE_DESTROY = "eurotoken_destruction"
         const val BLOCK_TYPE_CHECKPOINT = "eurotoken_checkpoint"
         const val BLOCK_TYPE_ROLLBACK = "eurotoken_rollback"
+        const val BLOCK_TYPE_JOIN = "eurotoken_join"
 
         private val EUROTOKEN_TYPES = listOf(
             BLOCK_TYPE_TRANSFER,
             BLOCK_TYPE_CREATE,
             BLOCK_TYPE_DESTROY,
             BLOCK_TYPE_CHECKPOINT,
-            BLOCK_TYPE_ROLLBACK
+            BLOCK_TYPE_ROLLBACK,
+            BLOCK_TYPE_JOIN
         )
 
         const val KEY_AMOUNT = "amount"
