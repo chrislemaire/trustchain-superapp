@@ -27,7 +27,7 @@ class TransactionRepository(
     private fun getBalanceChangeForBlock(block: TrustChainBlock?): Long {
         if (block == null) return 0
         return if (
-            (listOf(BLOCK_TYPE_TRANSFER).contains(block.type) && block.isProposal) ||
+            (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_JOIN).contains(block.type) && block.isProposal) ||
             (listOf(BLOCK_TYPE_ROLLBACK).contains(block.type) && block.isProposal) ||
             (listOf(BLOCK_TYPE_DESTROY).contains(block.type) && block.isProposal)
         ) {
@@ -35,7 +35,7 @@ class TransactionRepository(
             Log.d("EuroTokenBlock", (block.transaction[KEY_AMOUNT] as BigInteger).toString())
             -(block.transaction[KEY_AMOUNT] as BigInteger).toLong()
         } else if (
-            (listOf(BLOCK_TYPE_TRANSFER).contains(block.type) && block.isAgreement) ||
+            (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_JOIN).contains(block.type) && block.isAgreement) ||
             (listOf(BLOCK_TYPE_CREATE).contains(block.type) && block.isAgreement)
         ) {
             // block is receiving money
@@ -64,7 +64,8 @@ class TransactionRepository(
             }
         } else if (listOf(
                 BLOCK_TYPE_TRANSFER,
-                BLOCK_TYPE_CREATE
+                BLOCK_TYPE_CREATE,
+                BLOCK_TYPE_JOIN
             ).contains(block.type) && block.isAgreement
         ) {
             // block is receiving money, but balance is not verified, just recurse
@@ -72,7 +73,7 @@ class TransactionRepository(
                 database.getBlockWithHash(block.previousHash),
                 database
             )
-        } else if (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_DESTROY, BLOCK_TYPE_ROLLBACK).contains(
+        } else if (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_DESTROY, BLOCK_TYPE_ROLLBACK, BLOCK_TYPE_JOIN).contains(
                 block.type
             ) && block.isProposal
         ) {
@@ -107,12 +108,14 @@ class TransactionRepository(
                 BLOCK_TYPE_TRANSFER,
                 BLOCK_TYPE_DESTROY,
                 BLOCK_TYPE_CHECKPOINT,
-                BLOCK_TYPE_ROLLBACK
+                BLOCK_TYPE_ROLLBACK,
+                BLOCK_TYPE_JOIN
             ).contains(block.type) && block.isProposal)
         ) {
             (block.transaction[KEY_BALANCE] as Long)
         } else if (listOf(
                 BLOCK_TYPE_TRANSFER,
+                BLOCK_TYPE_JOIN,
                 BLOCK_TYPE_CREATE
             ).contains(block.type) && block.isAgreement
         ) {
@@ -126,20 +129,37 @@ class TransactionRepository(
         }
     }
 
-    fun getPoolOwnersForBlock(block: TrustChainBlock?, database: TrustChainStore): List<String>? {
+    fun getPoolOwnersForBlock(block: TrustChainBlock?, database: TrustChainStore): ArrayList<String>? {
+        println("reee: 1 - " + block?.type)
+        var list = ArrayList<String>()
         if (block == null) return null
-        if (block.isGenesis) return listOf()
-        if (!EUROTOKEN_TYPES.contains(block.type)) return getPoolOwnersForBlock(
-            database.getBlockWithHash(
-                block.previousHash
-            ), database
-        )
-        val list = listOf<String>()
-        getPoolOwnersForBlock(database.getBlockWithHash(block.previousHash), database)?.let { list.plus(it) }
+        if (block.isGenesis) {
+            if (BLOCK_TYPE_JOIN.equals(block.type)) {
+                list.add(block.linkPublicKey.toHex())
+            }
+            return list
+        }
+        if (!EUROTOKEN_TYPES.contains(block.type)) {
+            return getPoolOwnersForBlock(
+                database.getBlockWithHash(
+                    block.previousHash
+                ), database
+            )
+        }
+        val temp = getPoolOwnersForBlock(database.getBlockWithHash(block.previousHash), database)
+
+        if (temp != null) {
+            for (s in temp) {
+                if (!list.contains(s))
+                    list.add(s)
+            }
+        }
+
+
         if ( // block contains a join action
-            (BLOCK_TYPE_JOIN.equals(block.type) && block.isProposal)
+            (BLOCK_TYPE_JOIN.equals(block.type))
         ) {
-            list.plus(block.publicKey)
+            list.add(block.linkPublicKey.toHex())
         }
         return list
     }

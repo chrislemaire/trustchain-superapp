@@ -164,10 +164,16 @@
             android:text="TextView" />
 
         <Button
-            android:id="@+id/tempButton"
+            android:id="@+id/tempButtonJoin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button" />
+            android:text="Join" />
+
+        <Button
+            android:id="@+id/tempButtonSend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Transfer Money" />
 
     </LinearLayout>
 

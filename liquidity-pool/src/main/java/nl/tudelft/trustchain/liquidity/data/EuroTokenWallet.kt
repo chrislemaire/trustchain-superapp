@@ -12,19 +12,19 @@ import nl.tudelft.trustchain.common.ui.BaseFragment
 /**
  * Wallet class representing digitally stored euro tokens.
  */
-class EuroTokenWallet(private val transactionRepository: TransactionRepository) {
+class EuroTokenWallet(private val transactionRepository: TransactionRepository, private val publicKey: PublicKey) {
     /**
      * Gets the public key that can be used to perform transactions to this wallet.
      */
     fun getPublicKey(): PublicKey {
-        return transactionRepository.trustChainCommunity.myPeer.publicKey
+        return this.publicKey
     }
 
     /**
      * Gets the address used to address transactions to this wallet.
      */
     fun getWalletAddress(): String {
-        return getPublicKey().toString()
+        return getPublicKey().keyToBin().toHex()
     }
 
     /**
