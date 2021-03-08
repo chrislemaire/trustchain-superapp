@@ -10,4 +10,7 @@
         android:id="@+id/poolFragment"
         android:icon="@drawable/ic_device_hub_black_24dp"
         android:title="Exchange" />
+    <item
+        android:id="@+id/poolOwnerFragment"
+        android:title="Owners" />
 </menu>

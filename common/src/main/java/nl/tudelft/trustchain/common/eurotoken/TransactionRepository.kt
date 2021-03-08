@@ -155,7 +155,6 @@ class TransactionRepository(
             }
         }
 
-
         if ( // block contains a join action
             (BLOCK_TYPE_JOIN.equals(block.type))
         ) {

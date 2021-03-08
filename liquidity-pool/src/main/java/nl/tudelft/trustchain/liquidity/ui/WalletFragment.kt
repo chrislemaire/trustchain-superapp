@@ -58,7 +58,6 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
                 Toast.makeText(requireContext(), "Copied key to clipboard!", Toast.LENGTH_SHORT).show()
             }
             tempButtonJoin.setOnClickListener {
-//                euroWallet.joinPool("2a4af164c695119e900242ddd691ee4e76b842e8".hexToBytes(), 1L)
                 euroWallet.joinPool("4c69624e61434c504b3a8d0911792d223e3ee823aa592b010d1ffb1e554edb5d0791148f58675f78d56e80b9b7d689565b20a21d6b8ca97fc9354ab9c7f276572e6d0833a99964bf2a81".hexToBytes(), 0L)
             }
             tempButtonSend.setOnClickListener {
