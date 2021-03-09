@@ -18,7 +18,11 @@ import nl.tudelft.trustchain.common.ui.BaseFragment
 import nl.tudelft.trustchain.liquidity.R
 import nl.tudelft.trustchain.liquidity.data.EuroTokenWallet
 import nl.tudelft.trustchain.liquidity.service.WalletService
+import org.bitcoinj.core.Address
+import org.bitcoinj.core.Coin
 import org.bitcoinj.kits.WalletAppKit
+import org.bitcoinj.params.RegTestParams
+import org.bitcoinj.wallet.SendRequest
 import org.bitcoinj.wallet.Wallet
 
 class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
@@ -26,6 +30,7 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
      * The wallet app kit used to get a running bitcoin wallet.
      */
     lateinit var app: WalletAppKit
+    lateinit var app2: WalletAppKit
 
     /**
      * A repository for transactions in Euro Tokens.
@@ -40,9 +45,11 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
         // Get the directory where wallets can be stored.
         val walletDir = context?.cacheDir ?: throw Error("CacheDir not found")
 
+        val params = RegTestParams.get()
         // Create the wallets for bitcoin and euro token.
         app = WalletService.createPersonalWallet(walletDir)
         val btwWallet = app.wallet()
+
         val euroWallet = EuroTokenWallet(transactionRepository, getIpv8().myPeer.publicKey);
 
         val clipboard = getSystemService(requireContext(), ClipboardManager::class.java) as ClipboardManager
@@ -59,11 +66,16 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
             }
             tempButtonJoin.setOnClickListener {
                 euroWallet.joinPool("4c69624e61434c504b3a8d0911792d223e3ee823aa592b010d1ffb1e554edb5d0791148f58675f78d56e80b9b7d689565b20a21d6b8ca97fc9354ab9c7f276572e6d0833a99964bf2a81".hexToBytes(), 0L)
+                val sendRequest = SendRequest.to(Address.fromString(params, "mkvdunYqLX8i51qft4mF5opWbQpb6RQHeD"), Coin.valueOf(10000000))
+                try {
+                    btwWallet.sendCoins(sendRequest)
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Error in transaction!" + e, Toast.LENGTH_SHORT).show()
+                }
             }
             tempButtonSend.setOnClickListener {
                 euroWallet.sendTokens("4c69624e61434c504b3a8d0911792d223e3ee823aa592b010d1ffb1e554edb5d0791148f58675f78d56e80b9b7d689565b20a21d6b8ca97fc9354ab9c7f276572e6d0833a99964bf2a81".hexToBytes(), 0L)
             }
-
             while (isActive) {
                 bitCoinAddress.text = btwWallet.currentReceiveAddress().toString()
                 bitcoinBalance.text = getString(R.string.wallet_balance_conf_est,
@@ -86,5 +98,6 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
         super.onDestroy()
 
         app.stopAsync()
+        app2.stopAsync()
     }
 }
