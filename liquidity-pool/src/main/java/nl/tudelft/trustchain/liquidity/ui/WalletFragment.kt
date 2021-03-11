@@ -17,6 +17,7 @@ import nl.tudelft.trustchain.common.eurotoken.GatewayStore
 import nl.tudelft.trustchain.common.eurotoken.TransactionRepository
 import nl.tudelft.trustchain.common.ui.BaseFragment
 import nl.tudelft.trustchain.liquidity.R
+import nl.tudelft.trustchain.liquidity.data.BitcoinLiquidityWallet
 import nl.tudelft.trustchain.liquidity.data.EuroTokenWallet
 import nl.tudelft.trustchain.liquidity.service.WalletService
 import org.bitcoinj.core.Address
@@ -53,12 +54,15 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
 
         app2 = WalletService.createWallet(walletDir, "Alo?")
         val btwWallet2 = app2.wallet()
+        val btcLiqWallet = BitcoinLiquidityWallet(btwWallet2, app2)
+        btcLiqWallet.initializePool()
 
 
         val sendRequest = SendRequest.to(btwWallet2.currentReceiveAddress(), Coin.valueOf(10000000))
         val sendRes: Wallet.SendResult
         sendRes = btwWallet.sendCoins(sendRequest)
 
+        print("HIHIHI")
 
 
 
