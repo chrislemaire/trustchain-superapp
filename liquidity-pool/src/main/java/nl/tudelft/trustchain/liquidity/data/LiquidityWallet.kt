@@ -1,5 +1,8 @@
 package nl.tudelft.trustchain.liquidity.data
 
+import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
+import org.bitcoinj.core.Transaction
+
 interface LiquidityWallet {
     /**
      * The name of the coin that is held by this liquidity wallet.
@@ -18,4 +21,7 @@ interface LiquidityWallet {
      * not the case with multi-signature wallets.
      */
     fun startTransaction(amount: Double, address: String)
+
+
+
 }

@@ -82,6 +82,51 @@
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.8"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="@string/wallet_public_key"
+                            android:textAlignment="textStart" />
+
+                        <TextView
+                            android:id="@+id/bitCoinAddress2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="textStart" />
+
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/bitCoinCopyButton2"
+                        android:layout_width="55dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2"
+                        android:drawableLeft="@drawable/ic_content_copy" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/bitcoinBalance2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:text="@string/wallet_balance"
+                    android:textAlignment="textStart"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
 
             </LinearLayout>
@@ -178,6 +223,11 @@
             android:layout_height="wrap_content"
             android:text="Transfer Money" />
 
+        <Button
+            android:id="@+id/tempButtonSendBtc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Send Bitcoin" />
 
     </LinearLayout>
 

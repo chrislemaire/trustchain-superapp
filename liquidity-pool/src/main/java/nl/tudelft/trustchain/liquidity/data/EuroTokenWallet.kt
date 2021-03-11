@@ -2,6 +2,7 @@ package nl.tudelft.trustchain.liquidity.data
 
 import androidx.core.content.ContentProviderCompat.requireContext
 import nl.tudelft.ipv8.IPv8
+import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
 import nl.tudelft.ipv8.keyvault.PublicKey
 import nl.tudelft.trustchain.common.contacts.ContactStore
 import nl.tudelft.trustchain.common.eurotoken.GatewayStore
@@ -38,11 +39,11 @@ class EuroTokenWallet(private val transactionRepository: TransactionRepository, 
         return transactionRepository.getPoolOwners()
     }
 
-    fun joinPool(recipient: ByteArray, amount: Long) {
-        transactionRepository.sendJoinProposal(recipient, amount)
+    fun joinPool(recipient: ByteArray, amount: Long): TrustChainBlock? {
+        return transactionRepository.sendJoinProposal(recipient, amount)
     }
 
-    fun sendTokens(recipient: ByteArray, amount: Long) {
-        transactionRepository.sendTransferProposal(recipient, amount)
+    fun sendTokens(recipient: ByteArray, amount: Long): TrustChainBlock? {
+        return transactionRepository.sendTransferProposal(recipient, amount)
     }
 }

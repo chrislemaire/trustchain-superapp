@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.fragment_pool_wallet.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
 import nl.tudelft.ipv8.keyvault.defaultCryptoProvider
 import nl.tudelft.ipv8.util.hexToBytes
 import nl.tudelft.ipv8.util.toHex
@@ -45,10 +46,21 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
         // Get the directory where wallets can be stored.
         val walletDir = context?.cacheDir ?: throw Error("CacheDir not found")
 
-        val params = RegTestParams.get()
+  //      val params = RegTestParams.get()
         // Create the wallets for bitcoin and euro token.
         app = WalletService.createPersonalWallet(walletDir)
         val btwWallet = app.wallet()
+
+        app2 = WalletService.createWallet(walletDir, "Alo?")
+        val btwWallet2 = app2.wallet()
+
+
+        val sendRequest = SendRequest.to(btwWallet2.currentReceiveAddress(), Coin.valueOf(10000000))
+        val sendRes: Wallet.SendResult
+        sendRes = btwWallet.sendCoins(sendRequest)
+
+
+
 
         val euroWallet = EuroTokenWallet(transactionRepository, getIpv8().myPeer.publicKey);
 
@@ -66,21 +78,47 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
             }
             tempButtonJoin.setOnClickListener {
                 euroWallet.joinPool("4c69624e61434c504b3a8d0911792d223e3ee823aa592b010d1ffb1e554edb5d0791148f58675f78d56e80b9b7d689565b20a21d6b8ca97fc9354ab9c7f276572e6d0833a99964bf2a81".hexToBytes(), 0L)
-                val sendRequest = SendRequest.to(Address.fromString(params, "mkvdunYqLX8i51qft4mF5opWbQpb6RQHeD"), Coin.valueOf(10000000))
+        /*        val euroBlock = euroWallet.sendTokens("4c69624e61434c504b3a8d0911792d223e3ee823aa592b010d1ffb1e554edb5d0791148f58675f78d56e80b9b7d689565b20a21d6b8ca97fc9354ab9c7f276572e6d0833a99964bf2a81".hexToBytes(), 0L)
+                val sendRequest = SendRequest.to(btwWallet2.currentReceiveAddress(), Coin.valueOf(10000000))
+                val sendRes: Wallet.SendResult
                 try {
-                    btwWallet.sendCoins(sendRequest)
+                    sendRes = btwWallet.sendCoins(sendRequest)
+                    while(sendRes.tx.isPending) {
+                        //wait for transaction to be committed to a block
+                        Thread.sleep(1000)
+                    }
                 } catch (e: Exception) {
                     Toast.makeText(requireContext(), "Error in transaction!" + e, Toast.LENGTH_SHORT).show()
-                }
+                }*/
             }
             tempButtonSend.setOnClickListener {
                 euroWallet.sendTokens("4c69624e61434c504b3a8d0911792d223e3ee823aa592b010d1ffb1e554edb5d0791148f58675f78d56e80b9b7d689565b20a21d6b8ca97fc9354ab9c7f276572e6d0833a99964bf2a81".hexToBytes(), 0L)
             }
+            tempButtonSendBtc.setOnClickListener {
+                //val sendRequest = SendRequest.to(Address.fromString(params, "mkvdunYqLX8i51qft4mF5opWbQpb6RQHeD"), Coin.valueOf(10000000))
+              /*  val sendRequest = SendRequest.to(btwWallet2.currentReceiveAddress(), Coin.valueOf(10000000))
+                val sendRes: Wallet.SendResult
+                try {
+                    sendRes = btwWallet.sendCoins(sendRequest)
+                    while(sendRes.tx.isPending) {
+                        //wait for transaction to be committed to a block
+                        Thread.sleep(1000)
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(requireContext(), "Error in transaction!" + e, Toast.LENGTH_SHORT).show()
+                }*/
+            }
+
             while (isActive) {
                 bitCoinAddress.text = btwWallet.currentReceiveAddress().toString()
                 bitcoinBalance.text = getString(R.string.wallet_balance_conf_est,
                     btwWallet.balance.toFriendlyString(),
                     btwWallet.getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString())
+
+                bitCoinAddress2.text = btwWallet2.currentReceiveAddress().toString()
+                bitcoinBalance2.text = getString(R.string.wallet_balance_conf_est,
+                    btwWallet2.balance.toFriendlyString(),
+                    btwWallet2.getBalance(Wallet.BalanceType.ESTIMATED).toFriendlyString())
 
                 euroTokenAddress.text = euroWallet.getWalletAddress()
                 euroTokenBalance.text = getString(R.string.wallet_balance_conf,
@@ -88,6 +126,10 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
 
                 tempText.text = "oboi5 " + euroWallet.getPoolOwners().toString()
 
+                if (!sendRes.tx.isPending) {
+                    Toast.makeText(requireContext(), "Transaction committed to a block!!!" + sendRes.tx.isPending, Toast.LENGTH_SHORT).show()
+                    tempText.text = "Transaction committed to a block!!!" + euroWallet.getPoolOwners().toString()
+                }
 
                 delay(1000)
             }
@@ -98,6 +140,5 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
         super.onDestroy()
 
         app.stopAsync()
-        app2.stopAsync()
     }
 }
