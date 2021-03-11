@@ -2,6 +2,7 @@ package nl.tudelft.trustchain.liquidity.data
 
 import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
 import org.bitcoinj.core.Transaction
+import org.bitcoinj.core.TransactionConfidence
 
 abstract class LiquidityPool(
     val wallet1: LiquidityWallet,
@@ -12,7 +13,7 @@ abstract class LiquidityPool(
      * transactions
      */
     val pendingBtcTransactions: HashMap<Transaction, Boolean> = HashMap<Transaction, Boolean>()
-    val pendingEurTransactions: HashMap<TrustChainBlock, Boolean> = HashMap<TrustChainBlock, Boolean>()
+  //  val pendingEurTransactions: HashMap<TrustChainBlock, Boolean> = HashMap<TrustChainBlock, Boolean>()
 
     /**
      * Gets the name of the liquidity pool using the coin pair it exchanges.
@@ -51,7 +52,14 @@ abstract class LiquidityPool(
      * must call this function, including his btc & eurotoken
      * transactions
      */
-    fun joinPool(etx: TrustChainBlock, btx: Transaction) {
+  /*  fun joinPool(etx: TrustChainBlock, btx: Transaction) {
+        if (btx.hasConfidence()) {
+            // We have received the btc transaction (and it is included in the best chain)!
+            // TODO : Check if the given transaction is deep inside the blockchain to prevent double spend attacks!
+            if (btx.getConfidence().confidenceType == TransactionConfidence.ConfidenceType.BUILDING) {
 
-    }
+            }
+        }
+    }*/
+
 }

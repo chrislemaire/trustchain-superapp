@@ -1,5 +1,6 @@
 package nl.tudelft.trustchain.liquidity.data
 
+import android.util.Log
 import nl.tudelft.ipv8.attestation.trustchain.TrustChainBlock
 import nl.tudelft.trustchain.liquidity.service.WalletService
 import org.bitcoinj.core.*
@@ -15,8 +16,8 @@ class BitcoinLiquidityWallet(private val wallet: Wallet, private val app: Wallet
     override val coinName: String = "BTC"
 
     // TODO: Figure out who to send money to in a transaction response
-    override fun initializePool(pool: LiquidityPool) {
-
+    override fun initializePool(/*pool: LiquidityPool*/) {
+/*
         this.pool = pool
         if (pool.wallet1 == this) {
             wallet.addCoinsReceivedEventListener { _, tx, _, _ ->
@@ -26,7 +27,7 @@ class BitcoinLiquidityWallet(private val wallet: Wallet, private val app: Wallet
             wallet.addCoinsReceivedEventListener { _, tx, _, _ ->
                 pool.convert2To1(tx.outputSum.value.toDouble(), "me")
             }
-        }
+        }*/
 
         /**
          * Adds a transaction listener to the wallet's blockchain. Whenever a btc
@@ -38,9 +39,8 @@ class BitcoinLiquidityWallet(private val wallet: Wallet, private val app: Wallet
         app.chain().addTransactionReceivedListener (object : TransactionReceivedInBlockListener{
             override fun receiveFromBlock(tx: Transaction, block: StoredBlock,
                                           blockType: AbstractBlockChain.NewBlockType, relativityOffset: Int) {
-                if (blockType == AbstractBlockChain.NewBlockType.BEST_CHAIN) {
-                    pool.pendingBtcTransactions.put(tx, true)
-                }
+                Log.d("BitcoinBlock", "Received a simple transaction, not committed yet: ${tx}")
+                print("Received a block containing transaction ${tx}")
             }
             override fun notifyTransactionIsInBlock(txHash: Sha256Hash?, block: StoredBlock?, blockType: AbstractBlockChain.NewBlockType?, relativityOffset: Int): Boolean {
                 TODO("Not yet implemented")
