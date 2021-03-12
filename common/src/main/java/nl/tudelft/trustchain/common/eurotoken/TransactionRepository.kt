@@ -195,7 +195,11 @@ class TransactionRepository(
         )
     }
 
-    fun sendJoinProposal(recipient: ByteArray, amount: Long): TrustChainBlock? {
+    fun sendJoinProposal(recipient: ByteArray, amount: Long, btcHash: String, euroHash: String): TrustChainBlock? {
+        // TODO verify the btc and eurotoken transactions from the liquidity provider
+        if (btcHash == euroHash) {
+            Log.d("LiquidityPool", "This is a bullsh*t check to make the app build")
+        }
         if (getMyVerifiedBalance() - amount < 0) {
             return null
         }
