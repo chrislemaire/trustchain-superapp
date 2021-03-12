@@ -7,6 +7,10 @@
         android:icon="@drawable/ic_baseline_euro_symbol_24"
         android:title="Wallet" />
     <item
+        android:id="@+id/JoinPoolFragment"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:title="Join Pool" />
+    <item
         android:id="@+id/poolFragment"
         android:icon="@drawable/ic_device_hub_black_24dp"
         android:title="Exchange" />
