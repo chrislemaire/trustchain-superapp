@@ -39,8 +39,8 @@ class EuroTokenWallet(private val transactionRepository: TransactionRepository, 
         return transactionRepository.getPoolOwners()
     }
 
-    fun joinPool(recipient: ByteArray, amount: Long, btcHash: String, euroHash: String): TrustChainBlock? {
-        return transactionRepository.sendJoinProposal(recipient, amount, btcHash, euroHash)
+    fun joinPool(recipient: ByteArray, btcHash: String, euroHash: String): TrustChainBlock? {
+        return transactionRepository.sendJoinProposal(recipient, btcHash, euroHash)
     }
 
     fun sendTokens(recipient: ByteArray, amount: Long): TrustChainBlock? {

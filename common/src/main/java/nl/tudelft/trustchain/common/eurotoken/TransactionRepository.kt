@@ -27,7 +27,7 @@ class TransactionRepository(
     private fun getBalanceChangeForBlock(block: TrustChainBlock?): Long {
         if (block == null) return 0
         return if (
-            (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_JOIN).contains(block.type) && block.isProposal) ||
+            (listOf(BLOCK_TYPE_TRANSFER).contains(block.type) && block.isProposal) ||
             (listOf(BLOCK_TYPE_ROLLBACK).contains(block.type) && block.isProposal) ||
             (listOf(BLOCK_TYPE_DESTROY).contains(block.type) && block.isProposal)
         ) {
@@ -35,7 +35,7 @@ class TransactionRepository(
             Log.d("EuroTokenBlock", (block.transaction[KEY_AMOUNT] as BigInteger).toString())
             -(block.transaction[KEY_AMOUNT] as BigInteger).toLong()
         } else if (
-            (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_JOIN).contains(block.type) && block.isAgreement) ||
+            (listOf(BLOCK_TYPE_TRANSFER).contains(block.type) && block.isAgreement) ||
             (listOf(BLOCK_TYPE_CREATE).contains(block.type) && block.isAgreement)
         ) {
             // block is receiving money
@@ -64,8 +64,7 @@ class TransactionRepository(
             }
         } else if (listOf(
                 BLOCK_TYPE_TRANSFER,
-                BLOCK_TYPE_CREATE,
-                BLOCK_TYPE_JOIN
+                BLOCK_TYPE_CREATE
             ).contains(block.type) && block.isAgreement
         ) {
             // block is receiving money, but balance is not verified, just recurse
@@ -73,7 +72,7 @@ class TransactionRepository(
                 database.getBlockWithHash(block.previousHash),
                 database
             )
-        } else if (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_DESTROY, BLOCK_TYPE_ROLLBACK, BLOCK_TYPE_JOIN).contains(
+        } else if (listOf(BLOCK_TYPE_TRANSFER, BLOCK_TYPE_DESTROY, BLOCK_TYPE_ROLLBACK).contains(
                 block.type
             ) && block.isProposal
         ) {
@@ -108,14 +107,12 @@ class TransactionRepository(
                 BLOCK_TYPE_TRANSFER,
                 BLOCK_TYPE_DESTROY,
                 BLOCK_TYPE_CHECKPOINT,
-                BLOCK_TYPE_ROLLBACK,
-                BLOCK_TYPE_JOIN
+                BLOCK_TYPE_ROLLBACK
             ).contains(block.type) && block.isProposal)
         ) {
             (block.transaction[KEY_BALANCE] as Long)
         } else if (listOf(
                 BLOCK_TYPE_TRANSFER,
-                BLOCK_TYPE_JOIN,
                 BLOCK_TYPE_CREATE
             ).contains(block.type) && block.isAgreement
         ) {
@@ -130,7 +127,6 @@ class TransactionRepository(
     }
 
     fun getPoolOwnersForBlock(block: TrustChainBlock?, database: TrustChainStore): ArrayList<String>? {
-        println("reee: 1 - " + block?.type)
         var list = ArrayList<String>()
         if (block == null) return null
         if (block.isGenesis) {
@@ -195,17 +191,14 @@ class TransactionRepository(
         )
     }
 
-    fun sendJoinProposal(recipient: ByteArray, amount: Long, btcHash: String, euroHash: String): TrustChainBlock? {
+    fun sendJoinProposal(recipient: ByteArray, btcHash: String, euroHash: String): TrustChainBlock? {
         // TODO verify the btc and eurotoken transactions from the liquidity provider
         if (btcHash == euroHash) {
             Log.d("LiquidityPool", "This is a bullsh*t check to make the app build")
         }
-        if (getMyVerifiedBalance() - amount < 0) {
-            return null
-        }
         val transaction = mapOf(
-            KEY_AMOUNT to BigInteger.valueOf(amount),
-            KEY_BALANCE to (BigInteger.valueOf(getMyBalance() - amount).toLong())
+            "btcHash" to btcHash,
+            "euroHash" to euroHash
         )
         return trustChainCommunity.createProposalBlock(
             BLOCK_TYPE_JOIN, transaction,
@@ -434,31 +427,11 @@ class TransactionRepository(
                     database: TrustChainStore
                 ): ValidationResult {
                     if (block.isProposal) {
-                        if (!block.transaction.containsKey(KEY_AMOUNT)) return ValidationResult.Invalid(
-                            listOf("Missing amount")
-                        )
-                        var result = verifyListedBalance(block, database)
-                        if (result != ValidationResult.Valid) {
-                            return result
-                        }
-                        result = verifyBalanceAvailable(block, database)
-                        if (result != ValidationResult.Valid) {
-                            return result
-                        }
+                        return ValidationResult.Valid
                     } else {
-                        if (database.getLinked(block)?.transaction?.equals(block.transaction) != true) {
-                            return ValidationResult.Invalid(
-                                listOf(
-                                    "Linked transaction doesn't match (${block.transaction}, ${
-                                    database.getLinked(
-                                        block
-                                    )?.transaction ?: "MISSING"
-                                    })"
-                                )
-                            )
-                        }
+                        return ValidationResult.Valid
                     }
-                    return ValidationResult.Valid
+//                    return ValidationResult.Valid
                 }
             })
 

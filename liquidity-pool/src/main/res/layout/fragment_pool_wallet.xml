@@ -205,30 +205,6 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/tempText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
-
-        <Button
-            android:id="@+id/tempButtonJoin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Join" />
-
-        <Button
-            android:id="@+id/tempButtonSend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Transfer Money" />
-
-        <Button
-            android:id="@+id/tempButtonSendBtc"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Send Bitcoin" />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

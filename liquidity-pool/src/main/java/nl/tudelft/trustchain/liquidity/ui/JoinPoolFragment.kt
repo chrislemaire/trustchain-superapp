@@ -23,11 +23,9 @@ import nl.tudelft.trustchain.common.ui.BaseFragment
 import nl.tudelft.trustchain.liquidity.R
 import nl.tudelft.trustchain.liquidity.data.EuroTokenWallet
 import nl.tudelft.trustchain.liquidity.service.WalletService
-import org.bitcoinj.core.Coin
-import org.bitcoinj.core.Sha256Hash
-import org.bitcoinj.core.Transaction
-import org.bitcoinj.core.TransactionConfidence
+import org.bitcoinj.core.*
 import org.bitcoinj.kits.WalletAppKit
+import org.bitcoinj.params.RegTestParams
 import org.bitcoinj.utils.Threading
 import org.bitcoinj.wallet.SendRequest
 import org.bitcoinj.wallet.Wallet
@@ -44,7 +42,7 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
     lateinit var btcLiqWallet: Wallet
     lateinit var sharedPreference: SharedPreferences
     lateinit var  euroWallet: EuroTokenWallet
-    val euroLiqWallet = "4c69624e61434c504b3a8d0911792d223e3ee823aa592b010d1ffb1e554edb5d0791148f58675f78d56e80b9b7d689565b20a21d6b8ca97fc9354ab9c7f276572e6d0833a99964bf2a81"
+    val euroLiqWallet = "4c69624e61434c504b3ad9f961188f9f894a19fae40e6e174c0faf762cbcacd20d2e74a7c85b88a1026c99f67f4cca144de24b702b25bce12228e592b033579b639bf87a68389a00d267"
     var status: MutableMap<String, Status> = mutableMapOf("btc" to Status.NOTSEND, "euro" to Status.NOTSEND)
     var btcTransaction: Transaction? = null
     var euroTokenTransaction: TrustChainBlock? = null
@@ -91,9 +89,10 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
                 join_pool.isEnabled = false
             }
 
+            val params = RegTestParams.get()
             sendBtc.setOnClickListener {
                 sendBtc.isEnabled = false
-                val sendRequest = SendRequest.to(btcLiqWallet.currentReceiveAddress(), Coin.valueOf(10000000))
+                val sendRequest = SendRequest.to(Address.fromString(params, "myWTUN68XYcXXE1w7JSHJp2ouTuzHs7xqp"), Coin.valueOf(10000000))
                 val sendRes = btcWallet.sendCoins(sendRequest)
                 status["btc"] = Status.SEND
 
@@ -126,7 +125,7 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
                     euroTokenTransaction = proposalBlock
                     val txid = euroTokenTransaction!!.calculateHash()
                     val editor = sharedPreference.edit()
-                    editor.putString("eurTXID", txid.toHex())
+                    editor.putString("euroTXID", txid.toHex())
                     editor.apply()
                     checkEuroStatus()
                 }
@@ -137,7 +136,7 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
             join_pool.setOnClickListener {
                 if(btcTransaction != null && euroTokenTransaction != null) {
                     join_pool.isEnabled = false
-                    val joinProposalBlock = euroWallet.joinPool(euroLiqWallet.hexToBytes(), 0L, btcTransaction!!.txId.toString(), euroTokenTransaction!!.calculateHash().toHex())
+                    val joinProposalBlock = euroWallet.joinPool(euroLiqWallet.hexToBytes(), btcTransaction!!.txId.toString(), euroTokenTransaction!!.calculateHash().toHex())
                     if(joinProposalBlock != null) {
                         joinTransaction = joinProposalBlock
                         val txid = joinTransaction!!.calculateHash()
@@ -173,14 +172,13 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
     // TODO Beautify this code
     private fun getPoolStatus(): String {
         if(joinTransaction != null) {
+            if (transactionRepository.trustChainCommunity.database.getLinked(joinTransaction!!) != null) {
+                return "Joined"
+            }
             if (joinTransaction!!.isProposal) {
                 return "Pending"
             } else {
-                if (joinTransaction!!.isAgreement) {
-                    return "Joined"
-                } else {
-                    return "Unknown"
-                }
+                return "Unknown"
             }
         } else {
             return "Not joined"
@@ -213,12 +211,12 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
 
     private fun checkEuroStatus() {
         if (euroTokenTransaction != null) {
-            sendBtc.isEnabled = false
-            if (euroTokenTransaction!!.isProposal) {
-                status["euro"] = Status.PENDING
-            }
-            if (euroTokenTransaction!!.isAgreement) {
+            sendEuro.isEnabled = false
+            if (transactionRepository.trustChainCommunity.database.getLinked(euroTokenTransaction!!) != null) {
                 status["euro"] = Status.VERIFIED
+            }
+            else if (euroTokenTransaction!!.isProposal) {
+                status["euro"] = Status.PENDING
             }
         } else {
             status["euro"] = Status.NOTSEND
