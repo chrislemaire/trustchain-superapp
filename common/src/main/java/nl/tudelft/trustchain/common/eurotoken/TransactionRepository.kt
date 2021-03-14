@@ -361,6 +361,35 @@ class TransactionRepository(
         return ValidationResult.Valid
     }
 
+    private fun verifyJoinTransactions(btcHash: String, euroHash: String): ValidationResult {
+        val myKey = IPv8Android.getInstance().myPeer.publicKey.keyToBin()
+        var latestBlock = trustChainCommunity.database.getLatest(myKey) ?: return ValidationResult.Invalid(
+            listOf("Empty Chain")
+        )
+        var btcConfirmed = false
+        var euroConfirmed = false
+        do {
+            if (latestBlock.type.equals(BLOCK_TYPE_TRANSFER)) {
+                if (latestBlock.calculateHash().toHex().equals(euroHash)) {
+                    euroConfirmed = true
+                }
+            } else if (latestBlock.type.equals("bitcoin_transfer")) {
+                if (latestBlock.transaction.get("bitcoin_tx")!!.equals(btcHash)) {
+                    btcConfirmed = true
+                }
+            }
+            latestBlock = trustChainCommunity.database.getBlockWithHash(latestBlock.previousHash)!!
+        } while (!latestBlock.isGenesis)
+
+        if (btcConfirmed && euroConfirmed) {
+            return ValidationResult.Valid
+        } else {
+            return ValidationResult.Invalid(
+                listOf("Wrong Hashes")
+            )
+        }
+    }
+
     private fun addTransferListeners() {
         trustChainCommunity.registerTransactionValidator(
             BLOCK_TYPE_TRANSFER,
@@ -429,9 +458,15 @@ class TransactionRepository(
                     if (block.isProposal) {
                         return ValidationResult.Valid
                     } else {
+                        if (!block.transaction.containsKey("btcHash") || !block.transaction.containsKey("euroHash")) return ValidationResult.Invalid(
+                            listOf("Missing hashes")
+                        )
+                        Log.d("EuroTokenBlockJoin", "Received join request with hashes\nBTC: ${block.transaction.get("btcHash")}\nEuro: ${block.transaction.get("euroHash")}")
+
+                        // Check if hashes are valid by searching in own chain
+
                         return ValidationResult.Valid
                     }
-//                    return ValidationResult.Valid
                 }
             })
 

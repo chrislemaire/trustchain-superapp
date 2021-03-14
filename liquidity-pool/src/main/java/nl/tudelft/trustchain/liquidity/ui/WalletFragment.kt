@@ -54,7 +54,7 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
 
         app2 = WalletService.createWallet(walletDir, "Alo?")
         val btwWallet2 = app2.wallet()
-        val btcLiqWallet = BitcoinLiquidityWallet(btwWallet2, app2)
+        val btcLiqWallet = BitcoinLiquidityWallet(btwWallet, app, transactionRepository, getIpv8().myPeer.publicKey)
         btcLiqWallet.initializePool()
 
         val euroWallet = EuroTokenWallet(transactionRepository, getIpv8().myPeer.publicKey);
@@ -71,6 +71,8 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
                 clipboard.setPrimaryClip(ClipData.newPlainText("Wallet Link", euroTokenAddress.text))
                 Toast.makeText(requireContext(), "Copied key to clipboard!", Toast.LENGTH_SHORT).show()
             }
+
+            Toast.makeText(requireContext(), "Ok", Toast.LENGTH_SHORT).show()
 
             while (isActive) {
                 bitCoinAddress.text = btwWallet.currentReceiveAddress().toString()

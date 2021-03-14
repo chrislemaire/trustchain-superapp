@@ -48,6 +48,7 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
     var euroTokenTransaction: TrustChainBlock? = null
     var joinTransaction: TrustChainBlock? = null
 
+
     private val transactionRepository by lazy {
         TransactionRepository(getIpv8().getOverlay()!!, GatewayStore.getInstance(requireContext()))
     }
@@ -95,9 +96,9 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
                 val sendRequest = SendRequest.to(Address.fromString(params, "myWTUN68XYcXXE1w7JSHJp2ouTuzHs7xqp"), Coin.valueOf(10000000))
                 val sendRes = btcWallet.sendCoins(sendRequest)
                 status["btc"] = Status.SEND
-
                 Futures.addCallback(sendRes.broadcastComplete, object : FutureCallback<Transaction> {
                     override fun onSuccess(result: Transaction?) {
+                        Log.d("BitcoinTransaction", "Transaction success")
                         if (result != null) {
                             status["btc"] = Status.PENDING
                             btcTransaction = result
