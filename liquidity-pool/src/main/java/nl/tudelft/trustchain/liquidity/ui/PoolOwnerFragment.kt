@@ -42,12 +42,6 @@ class PoolOwnerFragment : BaseFragment(R.layout.fragment_pool_owner) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val list: LinearLayout = requireView().findViewById<View>(R.id.list) as LinearLayout
-//        val textView = TextView(requireContext());
-//        textView.setText("test");
-//        list.addView(textView)
-//        val textView1 = TextView(requireContext());
-//        textView1.setText("test1");
-//        list.addView(textView1)
         val euroWallet = EuroTokenWallet(transactionRepository, getIpv8().myPeer.publicKey);
 
         lifecycleScope.launchWhenStarted {

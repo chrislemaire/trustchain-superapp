@@ -96,6 +96,7 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
                 val sendRequest = SendRequest.to(Address.fromString(params, "myWTUN68XYcXXE1w7JSHJp2ouTuzHs7xqp"), Coin.valueOf(10000000))
                 val sendRes = btcWallet.sendCoins(sendRequest)
                 status["btc"] = Status.SEND
+                // TODO: Make it such we can still get the result even if the user closes the fragment before the callback is made.
                 Futures.addCallback(sendRes.broadcastComplete, object : FutureCallback<Transaction> {
                     override fun onSuccess(result: Transaction?) {
                         Log.d("BitcoinTransaction", "Transaction success")
@@ -156,7 +157,7 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
                 btc_status.text = getString(R.string.transaction_status, getStatusString("btc"))
                 eurotoken_status.text = getString(R.string.transaction_status, getStatusString("euro"))
                 join_status.text = getString(R.string.transaction_status, getPoolStatus())
-                delay(5000)
+                delay(2000)
             }
         }
     }

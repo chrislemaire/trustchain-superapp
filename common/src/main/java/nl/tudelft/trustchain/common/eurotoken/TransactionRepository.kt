@@ -368,22 +368,27 @@ class TransactionRepository(
         )
         var btcConfirmed = false
         var euroConfirmed = false
+
+        // Traverse the chain while the corresponding btc/euro transfer blocks are not found
         while(!euroConfirmed || !btcConfirmed) {
+            // For eurotoken blocks check the linked block for the correct hash
             if (latestBlock.type.equals(BLOCK_TYPE_TRANSFER)) {
                 if (trustChainCommunity.database.getLinked(latestBlock)?.calculateHash()?.toHex().equals(euroHash)) {
                     euroConfirmed = true
                 }
-            } else if (latestBlock.type.equals("bitcoin_transfer")) {
+            } else if (latestBlock.type.equals("bitcoin_transfer")) { //For bitcoin blocks check the value in the transactions of the block
                 if (latestBlock.transaction.get("bitcoin_tx")!!.equals(btcHash)) {
                     btcConfirmed = true
                 }
             }
+            // Stop if you have reached the end of the chain
             if (latestBlock.isGenesis) {
                 break
             }
             latestBlock = trustChainCommunity.database.getBlockWithHash(latestBlock.previousHash)!!
         }
         Log.d("VerifyJoinTransactions", "btc: ${btcConfirmed}, euro: ${euroConfirmed}")
+
         if (btcConfirmed && euroConfirmed) {
             Log.d("JoinPool", "Pool joined!")
             return ValidationResult.Valid
@@ -460,15 +465,14 @@ class TransactionRepository(
                     database: TrustChainStore
                 ): ValidationResult {
                     if (block.isProposal) {
+                        // TODO: Add checks for invalid Join proposal block, i.e. check if hashes are included in the block
                         return ValidationResult.Valid
                     } else {
                         if (!block.transaction.containsKey("btcHash") || !block.transaction.containsKey("euroHash")) return ValidationResult.Invalid(
                             listOf("Missing hashes")
                         )
                         Log.d("EuroTokenBlockJoin", "Received join request with hashes\nBTC: ${block.transaction.get("btcHash")}\nEuro: ${block.transaction.get("euroHash")}")
-
                         // Check if hashes are valid by searching in own chain
-
                         return verifyJoinTransactions(block.transaction.get("btcHash") as String,
                             block.transaction.get("euroHash") as String
                         )
@@ -491,7 +495,7 @@ class TransactionRepository(
 
         trustChainCommunity.addListener(BLOCK_TYPE_JOIN, object : BlockListener {
             override fun onBlockReceived(block: TrustChainBlock) {
-                Log.d("EuroTokenBlock", "onBlockReceived: ${block.blockId} ${block.transaction}")
+                Log.d("EuroTokenBlockJoin", "onBlockReceived: ${block.blockId} ${block.transaction}")
             }
         })
     }

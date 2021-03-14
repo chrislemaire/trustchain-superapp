@@ -54,6 +54,7 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
 
         app2 = WalletService.createWallet(walletDir, "Alo?")
         val btwWallet2 = app2.wallet()
+
         val btcLiqWallet = BitcoinLiquidityWallet(btwWallet, app, transactionRepository, getIpv8().myPeer.publicKey)
         btcLiqWallet.initializePool()
 
