@@ -368,9 +368,9 @@ class TransactionRepository(
         )
         var btcConfirmed = false
         var euroConfirmed = false
-        do {
+        while(!euroConfirmed || !btcConfirmed) {
             if (latestBlock.type.equals(BLOCK_TYPE_TRANSFER)) {
-                if (latestBlock.calculateHash().toHex().equals(euroHash)) {
+                if (trustChainCommunity.database.getLinked(latestBlock)?.calculateHash()?.toHex().equals(euroHash)) {
                     euroConfirmed = true
                 }
             } else if (latestBlock.type.equals("bitcoin_transfer")) {
@@ -378,10 +378,14 @@ class TransactionRepository(
                     btcConfirmed = true
                 }
             }
+            if (latestBlock.isGenesis) {
+                break
+            }
             latestBlock = trustChainCommunity.database.getBlockWithHash(latestBlock.previousHash)!!
-        } while (!latestBlock.isGenesis)
-
+        }
+        Log.d("VerifyJoinTransactions", "btc: ${btcConfirmed}, euro: ${euroConfirmed}")
         if (btcConfirmed && euroConfirmed) {
+            Log.d("JoinPool", "Pool joined!")
             return ValidationResult.Valid
         } else {
             return ValidationResult.Invalid(
@@ -465,7 +469,9 @@ class TransactionRepository(
 
                         // Check if hashes are valid by searching in own chain
 
-                        return ValidationResult.Valid
+                        return verifyJoinTransactions(block.transaction.get("btcHash") as String,
+                            block.transaction.get("euroHash") as String
+                        )
                     }
                 }
             })

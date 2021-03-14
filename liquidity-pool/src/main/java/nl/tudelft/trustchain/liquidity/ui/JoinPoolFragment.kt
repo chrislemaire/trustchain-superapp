@@ -152,6 +152,7 @@ class JoinPoolFragment : BaseFragment(R.layout.fragment_pool_join) {
                 checkBtcStatus()
                 checkEuroStatus()
                 join_pool.isEnabled = status["btc"] == Status.VERIFIED && status["euro"] == Status.VERIFIED  && joinTransaction == null
+//                join_pool.isEnabled = true
                 btc_status.text = getString(R.string.transaction_status, getStatusString("btc"))
                 eurotoken_status.text = getString(R.string.transaction_status, getStatusString("euro"))
                 join_status.text = getString(R.string.transaction_status, getPoolStatus())

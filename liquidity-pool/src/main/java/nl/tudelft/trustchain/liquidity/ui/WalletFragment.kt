@@ -72,7 +72,7 @@ class WalletFragment : BaseFragment(R.layout.fragment_pool_wallet) {
                 Toast.makeText(requireContext(), "Copied key to clipboard!", Toast.LENGTH_SHORT).show()
             }
 
-            Toast.makeText(requireContext(), "Ok", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "it", Toast.LENGTH_SHORT).show()
 
             while (isActive) {
                 bitCoinAddress.text = btwWallet.currentReceiveAddress().toString()
