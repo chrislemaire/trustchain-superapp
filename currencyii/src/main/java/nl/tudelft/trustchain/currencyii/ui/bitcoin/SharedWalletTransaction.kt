@@ -31,7 +31,7 @@ class SharedWalletTransaction : BaseFragment(R.layout.fragment_shared_wallet_tra
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        tempButton2.setOnClickListener {
+        button.setOnClickListener {
             lifecycleScope.launch {
                 withContext(Dispatchers.IO) {
                     transferFundsClicked()
