@@ -15,9 +15,12 @@ import org.bitcoinj.crypto.TransactionSignature
 import org.bitcoinj.kits.WalletAppKit
 import org.bitcoinj.script.ScriptBuilder
 import org.bitcoinj.wallet.SendRequest
+import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
+import java.io.File
 import java.util.*
+
 
 class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wallet) {
 
@@ -99,7 +102,12 @@ class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wal
         val redeemValue = Coin.valueOf(0, 1)
         redeemMultiSigTx2.addOutput(redeemValue, provider2Wallet.currentReceiveAddress())
         val provideMultiSigOutputScriptPubKey = provideMultiSigOutput.scriptPubKey
-        val redeemMultiSigTx2Hash = redeemMultiSigTx2.hashForSignature(0, provideMultiSigOutputScriptPubKey, Transaction.SigHash.ALL, false)
+        val redeemMultiSigTx2Hash = redeemMultiSigTx2.hashForSignature(
+            0,
+            provideMultiSigOutputScriptPubKey,
+            Transaction.SigHash.ALL,
+            false
+        )
         val provider2Signature = provider2Key.sign(redeemMultiSigTx2Hash)
         debugLog("Provider 2 signed a 0.01 BTC redeem transaction from the multi-sig wallet to itself.")
         delay(500)
@@ -112,7 +120,12 @@ class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wal
         val redeemMultiSigTx1 = Transaction(provider1AppKit.params())
         redeemMultiSigTx1.addInput(provideMultiSigOutput)
         redeemMultiSigTx1.addOutput(redeemValue, provider2Wallet.currentReceiveAddress())
-        val redeemMultiSigTx1Hash = redeemMultiSigTx1.hashForSignature(0, provideMultiSigOutputScriptPubKey, Transaction.SigHash.ALL, false)
+        val redeemMultiSigTx1Hash = redeemMultiSigTx1.hashForSignature(
+            0,
+            provideMultiSigOutputScriptPubKey,
+            Transaction.SigHash.ALL,
+            false
+        )
         val provider1Signature = provider1Key.sign(redeemMultiSigTx1Hash)
         debugLog("Provider 1 signed a 0.01 BTC redeem transaction from the multi-sig wallet to provider 2.")
         delay(500)
@@ -131,7 +144,10 @@ class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wal
 
     // Ethereum multi-sig wallet demo.
     private fun ethereumDemo() {
-        val web3j = Web3j.build(HttpService("<your_node_url>"))
+        val web3j = Web3j.build(HttpService("https://rinkeby.infura.io/v3/496ed2a73f4845978f0062d91bc53999"))
+        val clientVersion = web3j.web3ClientVersion().sendAsync().get()
+        if (clientVersion.hasError()) throw Error("Failed to connect to node.")
+
 
     }
 
