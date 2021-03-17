@@ -2,6 +2,11 @@ package nl.tudelft.trustchain.liquidity.ui
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
+import com.github.kittinunf.fuel.Fuel
+import com.github.kittinunf.fuel.core.extensions.jsonBody
+import com.github.kittinunf.fuel.httpPost
+import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import kotlinx.android.synthetic.main.fragment_pool_multi_sig_wallet.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -164,6 +169,29 @@ class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wal
         walletDir = File(walletDir.absolutePath + "/" + fileName)
         val credentials = WalletUtils.loadCredentials(password, walletDir)
         debugLog("Created a personal ETH wallet for provider 1: ${credentials.address}.")
+        //request funds from testnet faucet
+        requestFromFaucet(credentials.address)
+    }
+
+    private fun requestFromFaucet(address: String): Boolean {
+        val etherRequestUrl = "https://faucet.ropsten.be/donate/" + address
+        val (request, response, result) = Fuel.post(etherRequestUrl)
+            .response()
+        if (response.statusCode == 200) {
+            val responseJson = Gson().toJson(response)
+            debugLog(responseJson)
+            return true
+        }
+        else if (response.statusCode == 400) {
+            debugLog("invalid address: " + address)
+            return false
+        }
+        else if (response.statusCode == 403) {
+            debugLog("faucet queue is full")
+            return false
+        }
+        debugLog("unknown faucet error")
+        return false
     }
 
     private fun randomString(): String {
