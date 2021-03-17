@@ -88,6 +88,11 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.14.0"
 
+    //for json get request faucet ethereum
+    implementation "com.github.kittinunf.fuel:fuel:2.3.1"
+    implementation "com.github.kittinunf.fuel:fuel-gson:2.3.1"
+    implementation "com.google.code.gson:gson:2.8.6"
+
     // Wallet libraries
     implementation group: 'org.bitcoinj', name: 'bitcoinj-core', version: '0.15.10'
     implementation (group: 'org.web3j', name: 'core', version: '4.6.0-android') {
