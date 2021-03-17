@@ -19,8 +19,9 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
+import org.web3j.tx.Contract
+import org.web3j.tx.ManagedTransaction
 import java.io.File
-import java.security.Provider
 import java.security.Security
 import java.util.*
 
@@ -151,10 +152,12 @@ class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wal
         Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
         Security.insertProviderAt(BouncyCastleProvider(), 1)
 
+        // Connect to ethereum testnet (Rinkeby) node.
         val web3j = Web3j.build(HttpService("https://rinkeby.infura.io/v3/496ed2a73f4845978f0062d91bc53999"))
         val clientVersion = web3j.web3ClientVersion().sendAsync().get()
         if (clientVersion.hasError()) throw Error("Failed to connect to node.")
 
+        // Create a personal ETH wallet for provider 1.
         val password = randomString()
         var walletDir = context?.cacheDir?: throw Error("CacheDir not found")
         val fileName =  WalletUtils.generateLightNewWalletFile(password, walletDir)
