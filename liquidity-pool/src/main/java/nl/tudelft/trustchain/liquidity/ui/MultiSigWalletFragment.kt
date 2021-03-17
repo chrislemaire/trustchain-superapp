@@ -15,10 +15,13 @@ import org.bitcoinj.crypto.TransactionSignature
 import org.bitcoinj.kits.WalletAppKit
 import org.bitcoinj.script.ScriptBuilder
 import org.bitcoinj.wallet.SendRequest
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.web3j.crypto.WalletUtils
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.http.HttpService
 import java.io.File
+import java.security.Provider
+import java.security.Security
 import java.util.*
 
 
@@ -144,11 +147,20 @@ class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wal
 
     // Ethereum multi-sig wallet demo.
     private fun ethereumDemo() {
+        // Need to manually insert provider to be able to generate key pairs.
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
+        Security.insertProviderAt(BouncyCastleProvider(), 1)
+
         val web3j = Web3j.build(HttpService("https://rinkeby.infura.io/v3/496ed2a73f4845978f0062d91bc53999"))
         val clientVersion = web3j.web3ClientVersion().sendAsync().get()
         if (clientVersion.hasError()) throw Error("Failed to connect to node.")
 
-
+        val password = randomString()
+        var walletDir = context?.cacheDir?: throw Error("CacheDir not found")
+        val fileName =  WalletUtils.generateLightNewWalletFile(password, walletDir)
+        walletDir = File(walletDir.absolutePath + "/" + fileName)
+        val credentials = WalletUtils.loadCredentials(password, walletDir)
+        debugLog("Created a personal ETH wallet for provider 1: ${credentials.address}.")
     }
 
     private fun randomString(): String {
