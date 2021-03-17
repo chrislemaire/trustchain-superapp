@@ -15,6 +15,8 @@ import org.bitcoinj.crypto.TransactionSignature
 import org.bitcoinj.kits.WalletAppKit
 import org.bitcoinj.script.ScriptBuilder
 import org.bitcoinj.wallet.SendRequest
+import org.web3j.protocol.Web3j
+import org.web3j.protocol.http.HttpService
 import java.util.*
 
 class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wallet) {
@@ -129,7 +131,8 @@ class MultiSigWalletFragment : BaseFragment(R.layout.fragment_pool_multi_sig_wal
 
     // Ethereum multi-sig wallet demo.
     private fun ethereumDemo() {
-        // TODO
+        val web3j = Web3j.build(HttpService("<your_node_url>"))
+
     }
 
     private fun randomString(): String {

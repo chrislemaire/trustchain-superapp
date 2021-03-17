@@ -90,6 +90,7 @@ dependencies {
 
     // Wallet libraries
     implementation group: 'org.bitcoinj', name: 'bitcoinj-core', version: '0.15.10'
+    implementation group: 'org.web3j', name: 'core', version: '4.6.0-android'
 
     // Testing
     testImplementation "junit:junit:4.12"
